@@ -1,61 +1,167 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistema de Gestão
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Um sistema web desenvolvido em Laravel com interface administrativa usando Filament, projetado para oferecer uma solução completa de gestão com interface moderna e intuitiva.
 
-## About Laravel
+## 📋 Requisitos do Sistema
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Antes de instalar o sistema, certifique-se de que seu ambiente atende aos seguintes requisitos:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Softwares Necessários
+- **PHP 8.1 ou superior**
+- **Composer** (gerenciador de dependências do PHP)
+- **MySQL 8.0 ou superior** (banco de dados do projeto)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Extensões PHP Obrigatórias
+As seguintes extensões devem estar habilitadas no arquivo `php.ini`:
+- `extension=fileinfo` - Para manipulação de arquivos
+- `extension=intl` - Para internacionalização
+- `extension=pdo_mysql` - Para conexão com banco MySQL
 
-## Learning Laravel
+## 🚀 Instalação
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Siga os passos abaixo para configurar o sistema em seu ambiente local:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 1. Clone o Repositório
+```bash
+git clone [URL_DO_REPOSITORIO]
+cd [NOME_DO_DIRETORIO]
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 2. Instale as Dependências
+Execute o comando abaixo para instalar todas as dependências do projeto:
+```bash
+composer update
+```
 
-## Laravel Sponsors
+### 3. Configure o Arquivo de Ambiente
+Copie o arquivo de exemplo de configuração:
+```bash
+copy .env.example .env
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Abra o arquivo `.env` criado e configure as seguintes variáveis:
 
-### Premium Partners
+```env
+# Configurações da Aplicação
+APP_NAME="Hotel Panel"
+APP_ENV=local
+APP_KEY=          # Será gerado automaticamente no próximo passo
+APP_DEBUG=true
+APP_TIMEZONE='America/Sao_Paulo'
+APP_URL=http://localhost:8000    # ou URL do seu servidor de deploy
+APP_LOCALE='pt_BR'
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# Configurações de Localização
+APP_FALLBACK_LOCALE=en
+APP_FAKER_LOCALE=en_US
 
-## Contributing
+# Configurações de Sistema
+APP_MAINTENANCE_DRIVER=file
+PHP_CLI_SERVER_WORKERS=4
+BCRYPT_ROUNDS=12
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Configurações de Log
+LOG_CHANNEL=stack
+LOG_STACK=single
+LOG_DEPRECATIONS_CHANNEL=null
+LOG_LEVEL=debug
 
-## Code of Conduct
+# Configurações de Banco de Dados (MySQL)
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=hotel_panel
+DB_USERNAME=root
+DB_PASSWORD=sua_senha_mysql
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 4. Gere a Chave de Aplicação
+Gere a chave de criptografia do Laravel:
+```bash
+php artisan key:generate
+```
 
-## Security Vulnerabilities
+### 5. Configure o Banco de Dados
+Execute as migrações para criar as tabelas necessárias:
+```bash
+php artisan migrate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 6. Crie um Usuário Administrador
+Crie um usuário para acessar o painel administrativo:
+```bash
+php artisan filament:user
+```
+*Siga as instruções no terminal para definir nome, email e senha do administrador.*
 
-## License
+### 7. Inicie o Servidor de Desenvolvimento
+Execute o servidor local do Laravel:
+```bash
+php artisan serve
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 8. Acesse o Sistema
+Abra seu navegador e acesse:
+- **URL do sistema:** `http://localhost:8000`
+- **Painel administrativo:** `http://localhost:8000/admin`
+
+Use as credenciais criadas no passo 5 para fazer login no painel administrativo.
+
+## 🛠️ Tecnologias Utilizadas
+
+- **Laravel** - Framework PHP
+- **Filament** - Painel administrativo
+- **SQLite** - Banco de dados
+- **PHP** - Linguagem de programação
+
+## 📝 Comandos Úteis
+
+### Resetar o Banco de Dados
+```bash
+php artisan migrate:fresh
+```
+
+### Criar Novo Usuário Admin
+```bash
+php artisan filament:user
+```
+
+### Limpar Cache
+```bash
+php artisan cache:clear
+php artisan config:clear
+php artisan view:clear
+```
+
+## 🆘 Solução de Problemas
+
+### Erro: "Class not found"
+Execute: `composer dump-autoload`
+
+### Erro: "Key not found"
+Execute: `php artisan key:generate`
+
+### Erro: "Database not found"
+Execute: `php artisan migrate`
+
+## 👥 Desenvolvedores
+
+Este sistema foi desenvolvido por:
+
+**Matheus Zalamena**  
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://linkedin.com/in/matheus-zalamena)
+
+**Gabriel Bellagamba**  
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://linkedin.com/in/gabriel-bellagamba)
+
+## 📄 Licença
+
+Este projeto está sob a licença [MIT](LICENSE).
+
+## 🤝 Contribuição
+
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou enviar pull requests.
+
+---
+
+**Desenvolvido com ❤️ usando Laravel e Filament**
