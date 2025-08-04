@@ -6,8 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+
 class Quarto extends Model
 {
+    use LogsActivity;
     use HasFactory;
 
     protected $fillable = [
@@ -31,5 +36,17 @@ class Quarto extends Model
     public function tarefas(): HasMany
     {
         return $this->hasMany(Tarefa::class);
+    }
+
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'numero',
+                'tipo',
+                'valor_diaria',
+                'situacao',
+            ]);
     }
 }
