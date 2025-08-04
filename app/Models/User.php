@@ -79,7 +79,6 @@ class User extends Authenticatable implements FilamentUser
 
     public function tarefas(): HasMany
     {
-        // O nome da chave estrangeira na tabela de tarefas ainda é 'funcionario_id'
         return $this->hasMany(Tarefa::class, 'funcionario_id');
     }
 

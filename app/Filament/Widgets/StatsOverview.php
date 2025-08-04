@@ -17,8 +17,6 @@ class StatsOverview extends BaseWidget
     protected static ?int $sort = 1; // Define a ordem no dashboard
 
 
-
-
     protected function getStats(): array
     {
         $quartosDisponiveis = Quarto::where('situacao', 'disponivel')->count();

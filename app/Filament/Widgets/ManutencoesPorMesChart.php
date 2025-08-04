@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 class ManutencoesPorMesChart extends ChartWidget
 {
     protected static ?string $heading = 'Manutenções por Mês';
+
+    protected static ?int $sort = 3;
     protected static ?string $maxHeight = '300px';
     protected static string $color = 'warning';
 
