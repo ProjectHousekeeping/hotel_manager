@@ -6,8 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+
 class Tarefa extends Model
 {
+    use LogsActivity;
     use HasFactory;
 
     protected $fillable = [
@@ -36,5 +40,21 @@ class Tarefa extends Model
     public function quarto(): BelongsTo
     {
         return $this->belongsTo(Quarto::class);
+    }
+
+
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'user_id',
+                'quarto_id',
+                'tipo_tarefa',
+                'data',
+                'hora_inicio',
+                'hora_fim',
+                'descricao',
+            ]);
     }
 }
