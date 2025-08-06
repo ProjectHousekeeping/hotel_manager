@@ -11,9 +11,17 @@ use Illuminate\Database\Eloquent\SoftDeletes; // <-- Adicionado
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+
 class User extends Authenticatable implements FilamentUser
 {
+
     use HasFactory, Notifiable, SoftDeletes; // <-- Adicionado
+
+    use LogsActivity;
+    use HasFactory;
+
 
     /**
      * The attributes that are mass assignable.
@@ -79,7 +87,24 @@ class User extends Authenticatable implements FilamentUser
 
     public function tarefas(): HasMany
     {
-        // O nome da chave estrangeira na tabela de tarefas ainda é 'funcionario_id'
         return $this->hasMany(Tarefa::class, 'funcionario_id');
     }
+
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'name',
+                'email',
+                'password',
+                // Novos campos
+                'cpf',
+                'telefone',
+                'situacao',
+                'cargo_id',
+                'gerente_id',
+            ]);
+    }
 }
+

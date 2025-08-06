@@ -7,13 +7,16 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "diogogpinto/filament-auth-ui-enhancer": "^1.0",
         "filament/filament": "^3.0",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "nben/filament-record-nav": "^1.0",
-        "nuxtifyts/dash-stack-theme": "^1.3"
+        "nuxtifyts/dash-stack-theme": "^1.3",
+        "rmsramos/activitylog": "^1.0"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.16",
         "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.13",
