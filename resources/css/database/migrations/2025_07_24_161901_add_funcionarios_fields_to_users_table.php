@@ -9,7 +9,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Adiciona campos que eram do Funcionario
             $table->string('cpf')->unique()->nullable()->after('email');
             $table->string('telefone')->nullable()->after('cpf');
             $table->enum('situacao', ['disponivel', 'ocupado', 'ferias', 'afastado'])
