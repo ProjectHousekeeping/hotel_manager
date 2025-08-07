@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('quarto_id')->constrained('quartos')->onDelete('cascade');
-            $table->string('tipo_tarefa'); // Ex: 'LIMPEZA', 'MANUTENCAO'
+            $table->string('tipo_tarefa');
             $table->date('data');
             $table->time('hora_inicio');
             $table->time('hora_fim')->nullable();
