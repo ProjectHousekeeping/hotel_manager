@@ -94,6 +94,11 @@ php artisan filament:user
 ```
 *Siga as instruções no terminal para definir nome, email e senha do administrador.*
 
+### 6.1 Popula o banco de dados com informações genericas para testes.
+```bash
+php artisan db:seed
+```
+
 ### 7. Inicie o Servidor de Desenvolvimento
 Execute o servidor local do Laravel:
 ```bash
