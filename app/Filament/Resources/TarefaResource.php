@@ -15,6 +15,7 @@ use Filament\Tables\Table;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use BackedEnum;
+use Filament\Forms\Components\Tabs\Tab;
 use UnitEnum;
 
 class TarefaResource extends Resource
@@ -78,12 +79,21 @@ class TarefaResource extends Resource
                 Tables\Columns\TextColumn::make('tipo_tarefa')->badge(),
                 Tables\Columns\TextColumn::make('data')
                     ->date('d/m/Y')
+                    ->sortable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('hora_inicio')
+                    ->label('Início')
                     ->sortable(),
                 Tables\Columns\IconColumn::make('hora_fim')
                     ->label('Finalizada')
                     ->boolean()
                     ->trueIcon('heroicon-o-check-badge')
                     ->falseIcon('heroicon-o-x-circle'),
+                Tables\Columns\TextColumn::make('updated_at') // updated_at é o nome da coluna no banco de dados q mantém a ultima atualização do registro
+                    ->label('Última Atualização') // Label da coluna q será exibida para o usuario na tabela
+                    ->date('d/m/Y H:i') // Formato da data / data e hora
+                    ->sortable() // Permite ordenar por data de atualização
+                    ->toggleable() // Permite alternar a visibilidade da coluna
             ])
             ->filters([
                 //

@@ -17,6 +17,8 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Rmsramos\Activitylog\ActivitylogPlugin;
+use DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin;
+
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -29,12 +31,13 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandName('Hotel Manager')
             ->colors([
                 'primary' => Color::Orange
             ])
             ->plugins(
                 [
-                    ActivitylogPlugin::make()
+                    ActivitylogPlugin::make(),
                 ]
             )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
