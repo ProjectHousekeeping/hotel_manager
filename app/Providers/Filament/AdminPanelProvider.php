@@ -31,7 +31,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName('Hotel Manager')
+            ->brandName('MasterKey')
             ->colors([
                 'primary' => Color::Orange
             ])
