@@ -18,11 +18,19 @@ class Tarefa extends Model
         'user_id',
         'quarto_id',
         'tipo_tarefa',
+        'tipo_tarefa_id',
         'data',
         'hora_inicio',
         'hora_fim',
         'descricao',
     ];
+
+    /**
+     * Uma Tarefa possui um tipo de tarefa.
+     */
+    public function tipoTarefa(){
+        return $this->belongsTo(TipoTarefa::class, 'tipo_tarefa_id');
+    }
 
     /**
      * Uma Tarefa é realizada por um Funcionario.
@@ -51,6 +59,7 @@ class Tarefa extends Model
                 'user_id',
                 'quarto_id',
                 'tipo_tarefa',
+                'tipo_tarefa_id',
                 'data',
                 'hora_inicio',
                 'hora_fim',

@@ -55,6 +55,13 @@ class TarefaResource extends Resource
                         'Vistoria' => 'Vistoria',
                     ])
                     ->required(),
+
+                Forms\Components\Select::make('tipo_tarefa_id')
+                    ->label('Tipo de Tarefa')
+                    ->relationship('tipoTarefa', 'desc_tipo_tarefa')
+                    ->searchable()
+                    ->required(),
+                
                 Forms\Components\DatePicker::make('data')
                     ->required(),
                 Forms\Components\TimePicker::make('hora_inicio')
@@ -77,6 +84,14 @@ class TarefaResource extends Resource
                     ->searchable()
                     ->sortable(), // Permite ordenar por nome do usuário
                 Tables\Columns\TextColumn::make('tipo_tarefa')->badge(),
+
+                Tables\Columns\TextColumn::make('tipoTarefa.desc_tipo_tarefa')
+                    ->label('Tipo de Tarefa')
+                    ->sortable()
+                    ->searchable(),
+
+
+
                 Tables\Columns\TextColumn::make('data')
                     ->date('d/m/Y')
                     ->sortable()
