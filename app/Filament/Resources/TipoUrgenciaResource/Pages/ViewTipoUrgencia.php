@@ -4,17 +4,16 @@ namespace App\Filament\Resources\TipoUrgenciaResource\Pages;
 
 use App\Filament\Resources\TipoUrgenciaResource;
 use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
+use Filament\Resources\Pages\ViewRecord;
 
-class EditTipoUrgencia extends EditRecord
+class ViewTipoUrgencia extends ViewRecord
 {
     protected static string $resource = TipoUrgenciaResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\ViewAction::make(),
-            Actions\DeleteAction::make(),
+            Actions\EditAction::make(),
         ];
     }
 }

@@ -44,6 +44,7 @@ class TipoUrgenciaResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -65,6 +66,7 @@ class TipoUrgenciaResource extends Resource
         return [
             'index' => Pages\ListTipoUrgencias::route('/'),
             'create' => Pages\CreateTipoUrgencia::route('/create'),
+            'view' => Pages\ViewTipoUrgencia::route('/{record}'),
             'edit' => Pages\EditTipoUrgencia::route('/{record}/edit'),
         ];
     }
