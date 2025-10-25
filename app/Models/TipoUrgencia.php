@@ -12,7 +12,6 @@ class TipoUrgencia extends Model
     protected $fillable = [
         'id',
         'name',
-        'tarefa_id',
     ];
     public function tarefa(): HasMany
     {

@@ -23,6 +23,7 @@ class Tarefa extends Model
         'hora_inicio',
         'hora_fim',
         'descricao',
+        'tipo_urgencia_id',
     ];
 
     /**

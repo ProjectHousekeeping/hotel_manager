@@ -39,11 +39,6 @@ class TipoUrgenciaResource extends Resource
                     ->label('Nome')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('tarefa_id')
-                    ->relationship('tarefa', 'tipo_tarefa')
-                    ->required()
-                    ->searchable()
-                    ->preload(),
             ]);
     }
 

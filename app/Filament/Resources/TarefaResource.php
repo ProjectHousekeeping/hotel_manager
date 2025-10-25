@@ -63,7 +63,8 @@ class TarefaResource extends Resource
                 //->required(),
                 Forms\Components\Select::make('tipo_urgencia_id')
                     ->label('Tipo Urgência')
-                    ->relationship('tipoUrgencia', 'name')
+                    ->relationship('tipourgencia', 'name')
+                    ->preload()
                     ->searchable(),
                 Forms\Components\DatePicker::make('data')
                     ->required(),
