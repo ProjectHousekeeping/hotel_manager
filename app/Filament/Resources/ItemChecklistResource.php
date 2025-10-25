@@ -17,7 +17,9 @@ class ItemChecklistResource extends Resource
 {
     protected static ?string $model = ItemChecklist::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-check-circle';
+
+    protected static ?string  $navigationGroup = 'Configurações';
 
     public static function form(Form $form): Form
     {
@@ -37,7 +39,7 @@ class ItemChecklistResource extends Resource
 
  //               Forms\Components\TextInput::make('checklist_id')
  //                   ->required()
- //                   ->numeric()                    
+ //                   ->numeric()
  //                   ->default(null),
 
             ]);
@@ -56,7 +58,7 @@ class ItemChecklistResource extends Resource
                     ->label('Checklist')
                     ->sortable()
                     ->searchable(),
- 
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

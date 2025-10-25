@@ -17,7 +17,9 @@ class TipoTarefaResource extends Resource
 {
     protected static ?string $model = TipoTarefa::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-swatch';
+
+    protected static ?string  $navigationGroup = 'Configurações';
 
     public static function form(Form $form): Form
     {

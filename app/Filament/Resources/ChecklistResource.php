@@ -17,7 +17,9 @@ class ChecklistResource extends Resource
 {
     protected static ?string $model = Checklist::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
+
+    protected static ?string  $navigationGroup = 'Configurações';
 
     public static function form(Form $form): Form
     {
@@ -44,7 +46,7 @@ class ChecklistResource extends Resource
                 Tables\Columns\TextColumn::make('nome')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->searchable(),    
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
