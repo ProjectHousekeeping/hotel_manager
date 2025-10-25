@@ -49,7 +49,10 @@ class Tarefa extends Model
     {
         return $this->belongsTo(Quarto::class);
     }
-
+    public function tipoUrgencia(): BelongsTo
+    {
+        return $this->belongsTo(TipoUrgencia::class);
+    }
 
 
     public function getActivitylogOptions(): LogOptions
@@ -60,6 +63,7 @@ class Tarefa extends Model
                 'quarto_id',
                 'tipo_tarefa',
                 'tipo_tarefa_id',
+                'tipo_urgencia_id',
                 'data',
                 'hora_inicio',
                 'hora_fim',

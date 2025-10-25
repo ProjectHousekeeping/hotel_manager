@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('quarto_id')->constrained('quartos')->onDelete('cascade');
+            $table->foreignId('tipo_urgencia_id')->constrained('tipo_urgencias')->onDelete('cascade');
             $table->string('tipo_tarefa');
             $table->date('data');
             $table->time('hora_inicio');
