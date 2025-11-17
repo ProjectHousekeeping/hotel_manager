@@ -35,12 +35,8 @@ class ItemChecklistResource extends Resource
                     ->label('Selecione o Checklist:')
                     ->relationship('checklist', 'nome') // Mostra o campo "nome" do model Checklist
                     ->searchable()
+                    ->preload()
                     ->required(),
-
- //               Forms\Components\TextInput::make('checklist_id')
- //                   ->required()
- //                   ->numeric()
- //                   ->default(null),
 
             ]);
     }

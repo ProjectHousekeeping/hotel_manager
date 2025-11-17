@@ -8,11 +8,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TipoUrgencia extends Model
 {
-    use HasFactory;
+    use HasFactory; // ver pq elas adicionaram
+   
+   // protected $guarded = ['id']; -- gerar o id automaticamente - alterar depois
+   
+   
     protected $fillable = [
         'id',
         'name',
     ];
+
+    
     public function tarefa(): HasMany
     {
         return $this->hasMany(Tarefa::class);

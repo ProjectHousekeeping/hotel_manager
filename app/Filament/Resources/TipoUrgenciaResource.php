@@ -36,7 +36,7 @@ class TipoUrgenciaResource extends Resource
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('name')
-                    ->label('Nome')
+                    ->label('Prioridade:')
                     ->required()
                     ->maxLength(255),
             ]);

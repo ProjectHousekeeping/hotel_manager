@@ -43,6 +43,7 @@ class CargoResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('nome')
+                    ->label('Nome:')
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true), // Garante que o nome seja único

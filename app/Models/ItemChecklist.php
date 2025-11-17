@@ -25,8 +25,6 @@ class ItemChecklist extends Model{
 	public function checklist(){
         
         return $this->belongsTo(\App\Models\Checklist::class);
-    // NAO PODE - return $this->belongsTo(\App\Models\Checklist::class, 'checklists_id');
-    //  ANTIGO - return $this->belongsTo(Checklist::class);
 
     } 
 

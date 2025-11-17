@@ -26,10 +26,12 @@ class ChecklistResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('nome')
+                    ->label('Nome:')
                     ->maxLength(255)
+                    ->required()
                     ->default(null),
                 Forms\Components\Select::make('status')
-                    ->label('Status')
+                    ->label('Status:')
                     ->options([
                         'ativo' => 'Ativo',
                         'inativo' => 'Inativo',
@@ -72,7 +74,7 @@ class ChecklistResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+             \App\Filament\Resources\ChecklistResource\RelationManagers\ItensDoChecklistRelationManager::class,
         ];
     }
 
