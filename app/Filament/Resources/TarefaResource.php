@@ -22,9 +22,9 @@ class TarefaResource extends Resource
 {
     protected static ?string $model = Tarefa::class;
 
-    protected static ?string  $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
 
-    protected static ?string  $navigationGroup = "Operações";
+    protected static ?string $navigationGroup = "Operações";
 
     protected static ?string $modelLabel = 'Tarefa';
 
@@ -55,6 +55,17 @@ class TarefaResource extends Resource
                         'Vistoria' => 'Vistoria',
                     ])
                     ->required(),
+
+                Forms\Components\Select::make('tipo_tarefa_id')
+                    ->label('Tipo de Tarefa')
+                    ->relationship('tipoTarefa', 'desc_tipo_tarefa')
+                    ->searchable(),
+                //->required(),
+                Forms\Components\Select::make('tipo_urgencia_id')
+                    ->label('Tipo Urgência')
+                    ->relationship('tipourgencia', 'name')
+                    ->preload()
+                    ->searchable(),
                 Forms\Components\DatePicker::make('data')
                     ->required(),
                 Forms\Components\TimePicker::make('hora_inicio')
@@ -77,6 +88,17 @@ class TarefaResource extends Resource
                     ->searchable()
                     ->sortable(), // Permite ordenar por nome do usuário
                 Tables\Columns\TextColumn::make('tipo_tarefa')->badge(),
+
+                Tables\Columns\TextColumn::make('tipoTarefa.desc_tipo_tarefa')
+                    ->label('Tipo de Tarefa')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('tipoUrgencia.name')
+                    ->label('Tipo Urgência')
+                    ->searchable()
+                    ->sortable(),
+
+
                 Tables\Columns\TextColumn::make('data')
                     ->date('d/m/Y')
                     ->sortable()

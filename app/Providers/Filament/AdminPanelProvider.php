@@ -33,7 +33,9 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->brandName('MasterKey')
             ->colors([
-                'primary' => Color::Blue
+                'danger' => Color::Red,
+                'warning'=> Color::Orange,
+                'success' => Color::Emerald,
             ])
             ->plugins(
                 [

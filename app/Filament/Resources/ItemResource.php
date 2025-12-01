@@ -18,7 +18,7 @@ class ItemResource extends Resource
 {
     protected static ?string $model = Item::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-cube'; // Ícone de cubo
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag'; // Ícone de cubo
 
     protected static ?string  $navigationGroup = 'Inventário'; // Grupo no menu lateral
 

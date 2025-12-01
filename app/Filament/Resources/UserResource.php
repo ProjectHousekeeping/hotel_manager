@@ -45,8 +45,8 @@ class UserResource extends Resource
                          Forms\Components\TextInput::make('password')
                             ->label('Senha') // Adicione um label mais claro
                             ->password()
-                            ->dehydrated(fn (string $context): bool => $context === 'create' || !empty($state)) 
-                            ->required(fn (string $context): bool => $context === 'create'), 
+                            ->dehydrated(fn (string $context): bool => $context === 'create' || !empty($state))
+                            ->required(fn (string $context): bool => $context === 'create'),
                         Forms\Components\TextInput::make('cpf')->required(),
                         Forms\Components\TextInput::make('telefone'),
                     ])->columns(2),
