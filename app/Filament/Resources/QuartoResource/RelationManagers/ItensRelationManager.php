@@ -11,34 +11,39 @@ use Filament\Tables\Table;
 class ItensRelationManager extends RelationManager
 {
     protected static string $relationship = 'itens';
-
+        
+    // Monta o Formulário para criar/editar um item DENTRO do quarto
     public function form(Form $form): Form
     {
-        // Formulário para criar/editar um item DENTRO do quarto
         return $form
             ->schema([
                 Forms\Components\TextInput::make('nome')
+                    ->label('Nome:')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('preco')
+                    ->label('Valor:')
                     ->required()
                     ->numeric()
                     ->prefix('R$'),
                 Forms\Components\TextInput::make('quantidade')
+                    ->label('Quantidade:')
                     ->required()
                     ->numeric()
                     ->default(1),
             ]);
     }
 
+    // Monta a Tabela que lista os itens do quarto selecionado
     public function table(Table $table): Table
     {
-        // Tabela que lista os itens do quarto selecionado
         return $table
             ->recordTitleAttribute('nome')
             ->columns([
                 Tables\Columns\TextColumn::make('nome'),
-                Tables\Columns\TextColumn::make('preco')->money('BRL'),
+                Tables\Columns\TextColumn::make('preco')
+                    ->label('Valor')
+                    ->money('BRL'),
                 Tables\Columns\TextColumn::make('quantidade'),
             ])
             ->filters([

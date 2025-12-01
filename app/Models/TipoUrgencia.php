@@ -10,11 +10,10 @@ class TipoUrgencia extends Model
 {
     use HasFactory; // ver pq elas adicionaram
    
-   // protected $guarded = ['id']; -- gerar o id automaticamente - alterar depois
+    protected $guarded = ['id']; 
    
    
     protected $fillable = [
-        'id',
         'name',
     ];
 

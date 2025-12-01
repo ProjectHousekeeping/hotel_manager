@@ -10,6 +10,7 @@ class Cargo extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'status',
         'nome',
     ];
 
@@ -20,4 +21,14 @@ class Cargo extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    /**
+     * Um Cargo pode ter varios tipos de tarefas
+     */
+    public function tipoTarefas()
+    {
+        return $this->belongsToMany(\App\Models\TipoTarefa::class, 'cargo_tipo_tarefa');
+    }
+
+
 }

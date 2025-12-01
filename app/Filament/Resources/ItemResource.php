@@ -38,19 +38,24 @@ class ItemResource extends Resource
             ->schema([
                 Forms\Components\Select::make('quarto_id')
                     ->relationship('quarto', 'numero') // Relaciona com o quarto pelo número
+                    ->label('Quarto:')
                     ->required()
                     ->searchable()
                     ->preload(),
                 Forms\Components\TextInput::make('nome')
+                    ->label('Nome:')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('marca')
+                    ->label('Marca:')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('preco')
+                    ->label('Valor:')
                     ->required()
                     ->numeric()
                     ->prefix('R$'),
                 Forms\Components\TextInput::make('quantidade')
+                    ->label('Quantidade:')
                     ->required()
                     ->numeric()
                     ->default(1),

@@ -20,6 +20,8 @@ class TipoTarefaResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-swatch';
     protected static ?string $navigationGroup = 'Configurações';
 
+
+//monta o formulário e cadastro do tipo de tarefa
     public static function form(Form $form): Form
 {
     return $form
@@ -27,15 +29,24 @@ class TipoTarefaResource extends Resource
             Forms\Components\TextInput::make('desc_tipo_tarefa')
                 ->maxLength(255)
                 ->label('Descrição tipo tarefa:')
-                ->required()
-                ->default(null),
+                ->required(),
 
             Forms\Components\Select::make('checklist_id')
                 ->label('Selecione o Checklist:')
                 ->relationship('checklist', 'nome')
                 ->searchable()
                 ->preload()
-                ->required(),
+                ->required()
+                ->reactive()
+                ->afterStateUpdated(function ($state, callable $set) {
+                     $itens = \App\Models\Checklist::find($state)?->itensDoChecklist ?? collect();
+
+                    $html = view('filament.partials.tipo-tarefa-itens', [
+                        'itens' => $itens,
+                    ])->render();
+
+                        $set('itens_html', $html);
+                }),
 
             Forms\Components\Select::make('status')
                 ->label('Status:')
@@ -46,28 +57,28 @@ class TipoTarefaResource extends Resource
                 ->default('ativo')
                 ->required(),
 
-            // 👇 Aqui vem a seção que lista os itens do checklist
-            Forms\Components\Section::make('Itens do Checklist')
-                ->description('Itens vinculados ao checklist selecionado.')
-                ->schema(function (?Model $record) {
-                    if (! $record || ! $record->checklist) {
-                        return [
-                            Forms\Components\View::make('filament.partials.tipo-tarefa-itens')
-                                ->viewData(['itens' => collect()]),
-                        ];
-                    }
+Forms\Components\Section::make('Itens do Checklist')
+    ->schema([
+        Forms\Components\View::make('filament.partials.tipo-tarefa-itens')
+            ->viewData(function (callable $get) {
+                $checklistId = $get('checklist_id');
 
-                    return [
-                        Forms\Components\View::make('filament.partials.tipo-tarefa-itens')
-                            ->viewData([
-                                'itens' => $record->checklist->itensDoChecklist,
-                            ]),
-                    ];
-                })
-                ->hidden(fn (?Model $record) => $record === null),
-        ]);
-}
+                if (! $checklistId) {
+                    return ['itens' => collect()];
+                }
 
+                $checklist = \App\Models\Checklist::find($checklistId);
+
+                return [
+                    'itens' => $checklist?->itensDoChecklist ?? collect(),
+                ];
+            })
+            ->columnSpan('full'),
+    ])
+                    ]);
+    }
+
+// Monta a tabela com a lista de Tipos de Tarefas já cadastradas no sistema
     public static function table(Table $table): Table
     {
         return $table
@@ -100,6 +111,8 @@ class TipoTarefaResource extends Resource
             ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->label("Excluir"),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

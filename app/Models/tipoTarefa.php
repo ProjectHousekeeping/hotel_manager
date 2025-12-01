@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class tipoTarefa extends Model{
+class TipoTarefa extends Model{
 
     protected $guarded = ['id'];
 
@@ -25,5 +25,13 @@ class tipoTarefa extends Model{
     public function tarefas(){
         return $this->hasMany(Tarefa::class, 'tipo_tarefa_id');
     }
+
+    /**
+     * Um tipo de tarefa pode estar vinculado a varios tipos de cargos.
+     */
+   public function cargos()
+    {
+        return $this->belongsToMany(\App\Models\Cargo::class, 'cargo_tipo_tarefa');
+    } 
 
 }

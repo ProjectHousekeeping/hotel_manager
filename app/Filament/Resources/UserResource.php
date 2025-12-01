@@ -37,18 +37,23 @@ class UserResource extends Resource
                 Forms\Components\Section::make('Identificação')
                     ->schema([
                         Forms\Components\TextInput::make('name')
-                            ->label('Nome Completo')
+                            ->label('Nome Completo:')
                             ->required(),
                         Forms\Components\TextInput::make('email')
+                            ->label('E-mail:')
                             ->email()
                             ->required(),
-                         Forms\Components\TextInput::make('password')
-                            ->label('Senha') // Adicione um label mais claro
+                        Forms\Components\TextInput::make('password')
+                            ->label('Senha:') // Adicione um label mais claro
                             ->password()
                             ->dehydrated(fn (string $context): bool => $context === 'create' || !empty($state))
                             ->required(fn (string $context): bool => $context === 'create'),
-                        Forms\Components\TextInput::make('cpf')->required(),
-                        Forms\Components\TextInput::make('telefone'),
+                        Forms\Components\TextInput::make('cpf')
+                            ->label('CPF:')
+                            ->mask('999.999.999-99')
+                            ->required(),
+                        Forms\Components\TextInput::make('telefone')
+                            ->label('Telefone:'),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Função e Hierarquia')
@@ -56,12 +61,16 @@ class UserResource extends Resource
                         Forms\Components\Select::make('cargo_id')
                             ->relationship('cargo', 'nome')
                             ->searchable()
+                            ->label('Cargo:')
                             ->preload(),
                         Forms\Components\Select::make('gerente_id')
+                            // Maiza - Não entendi a função disso
                             ->relationship('gerente', 'name') // Agora relaciona com outros usuários
                             ->searchable()
+                            ->label('Gerente:')
                             ->preload(),
                         Forms\Components\Select::make('situacao')
+                            ->label('Situação:')
                             ->options([
                                 'disponivel' => 'Disponível',
                                 'ocupado' => 'Ocupado',
@@ -74,16 +83,24 @@ class UserResource extends Resource
 
     public static function table(Table $table): Table
     {
+        // Tabela com a lista de usuários cadastrados
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label('Nome')->searchable(),
-                Tables\Columns\TextColumn::make('email')->searchable(),
-                Tables\Columns\TextColumn::make('cargo.nome')->sortable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Nome')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->label('E-mail')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('cargo.nome')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('situacao')
+                    ->label('Situação')
+                    // Por algum motivo não esta apresendo a lista abaixo na tabela
                     ->colors([
-                        'success' => 'disponivel',
-                        'danger' => 'afastado',
-                        'warning' => 'ferias',
+                        'success' => 'Disponível',
+                        'danger' => 'Afastado',
+                        'warning' => 'Férias',
                     ])->badge(),
                 Tables\Columns\TextColumn::make('created_at')->dateTime('d/m/Y')->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -105,6 +122,7 @@ class UserResource extends Resource
 
     public static function infolist(Infolist $infolist): Infolist
     {
+        // quadro apresentado quando clicar em visualizar na tabela
         return $infolist
             ->schema([
                 Infolists\Components\Section::make('Informações do Usuário')
@@ -114,7 +132,8 @@ class UserResource extends Resource
                                 Infolists\Components\TextEntry::make('name')
                                     ->label('Nome'), // Customiza o rótulo do campo
 
-                                Infolists\Components\TextEntry::make('email'),
+                                Infolists\Components\TextEntry::make('email')
+                                    ->label('E-mail'),
                             ]),
                     ]),
 
@@ -123,7 +142,7 @@ class UserResource extends Resource
                         Infolists\Components\Grid::make(2)
                             ->schema([
                                 Infolists\Components\IconEntry::make('email_verified_at')
-                                    ->label('Email Verificado')
+                                    ->label('E-mail Verificado')
                                     ->boolean() // Mostra um ícone de certo/errado
                                     ->trueIcon('heroicon-o-check-badge')
                                     ->falseIcon('heroicon-o-x-circle'),
