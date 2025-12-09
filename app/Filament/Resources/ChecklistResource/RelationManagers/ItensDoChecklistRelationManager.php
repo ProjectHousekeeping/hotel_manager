@@ -20,6 +20,7 @@ class ItensDoChecklistRelationManager extends RelationManager
         return $form
             ->schema([
                 Forms\Components\TextInput::make('descricao')
+                    ->label('Descrição:')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -30,7 +31,8 @@ class ItensDoChecklistRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('descricao')
             ->columns([
-                Tables\Columns\TextColumn::make('descricao'),
+                Tables\Columns\TextColumn::make('descricao')
+                    ->label('Descrição'),
             ])
             ->filters([
                 //

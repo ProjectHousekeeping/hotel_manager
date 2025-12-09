@@ -23,18 +23,20 @@ class TipoUrgenciaResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-exclamation-triangle';
 
-    protected static ?string $navigationLabel = 'Tipo Urgência';
+    //alterado o nome do menu para prioridade
+    protected static ?string $navigationLabel = 'Tipo Prioridade';
 
-    protected static ?string $modelLabel = 'Tipo Urgência';
+    protected static ?string $modelLabel = 'Tipo Prioridade';
     protected static ?string $navigationGroup = 'Configurações';
 
+    // monta o formulário de cadastro
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('tipo_urgencia_id')
-                    ->required()
-                    ->numeric(),
+                //Forms\Components\TextInput::make('tipo_urgencia_id')
+                  //  ->required()
+                    //->numeric(),
                 Forms\Components\TextInput::make('name')
                     ->label('Prioridade:')
                     ->required()
@@ -42,23 +44,31 @@ class TipoUrgenciaResource extends Resource
             ]);
     }
 
+    // monta a tabela com a lista de prioridades já cadastradas
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id'),
-                Tables\Columns\TextColumn::make('name'),
+                //Tables\Columns\TextColumn::make('id')
+                //    ->label('ID'),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Prioridade'),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()->label('Visualizar'),
-                Tables\Actions\EditAction::make()->label('Editar'),
+                Tables\Actions\ViewAction::make()
+                    ->label('Visualizar'),
+                Tables\Actions\EditAction::make()
+                    ->label('Editar'),
+                Tables\Actions\DeleteAction::make()
+                    ->label("Excluir"),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()->label('Excluir'),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->label('Excluir'),
                 ]),
             ]);
     }
@@ -66,10 +76,11 @@ class TipoUrgenciaResource extends Resource
     {
         return $infolist
             ->schema([
-                Section::make('Informações tipo urgência')
+                Section::make('Informações do tipo Prioridade')
                     ->schema([
                         TextEntry::make('id'),
-                        TextEntry::make('name')->label('Nome classificação'),
+                        TextEntry::make('name')
+                            ->label('Nome classificação'),
                     ])->columns(2)
             ]);
     }

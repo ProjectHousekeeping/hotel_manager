@@ -37,7 +37,7 @@ class CargoResource extends Resource
     }
 
 
-
+    //retorna o form para cadastro do cargo
     public static function form(Form $form): Form
     {
         return $form
@@ -47,19 +47,32 @@ class CargoResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true), // Garante que o nome seja único
+                Forms\Components\Select::make('status')
+                    ->label('Status:')
+                    ->options([
+                    1 => 'Ativo',
+                    2 => 'Inativo',
+                    ])
+                    ->default(1)
+                    ->required()
             ]);
     }
 
+    // retorna a tabela com a lista de cargos
     public static function table(Table $table): Table
     {
 
         $livewire = $table->getLivewire();
-
+ 
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('nome')
                     ->searchable() // Permite buscar pelo nome
                     ->sortable(), // Permite ordenar
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->formatStateUsing(fn ($state) => $state == 1 ? 'Ativo' : 'Inativo')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('d/m/Y H:i')
                     ->sortable()
@@ -80,6 +93,7 @@ class CargoResource extends Resource
             ]);
     }
 
+    //retorna os dados de visualização
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
@@ -89,6 +103,10 @@ class CargoResource extends Resource
                         Infolists\Components\Grid::make(2)
                             ->schema([
                                 Infolists\Components\TextEntry::make('nome'),
+                                Infolists\Components\TextEntry::make('status')
+                                    ->label('Status')
+                                    ->formatStateUsing(function ($state) {
+                                        return $state == 1 ? 'Ativo' : 'Inativo'; }),
                                 Infolists\Components\TextEntry::make('created_at')->dateTime('d/m/Y H:i')->label('Criado em'),
                             ])
                     ])
@@ -98,10 +116,12 @@ class CargoResource extends Resource
     public static function getRelations(): array
 {
     return [
-        // Adicione esta linha para registar o seu novo gestor
+        // Adicione esta linha para registar o seu novo gestor/chefia?
         RelationManagers\UsersRelationManager::class,
+        RelationManagers\TipoTarefasRelationManager::class, // ← adicionar aqui
     ];
 }
+
 
     public static function getPages(): array
     {
