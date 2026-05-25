@@ -5,34 +5,49 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\QuartoResource\Pages;
 use App\Filament\Resources\QuartoResource\RelationManagers;
 use App\Models\Quarto;
+use DomainException;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
-
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class QuartoResource extends Resource
 {
     protected static ?string $model = Quarto::class;
 
-    protected static ?string  $navigationIcon = 'heroicon-o-key'; // Ícone de chave
+    protected static ?string  $navigationIcon = 'heroicon-o-key';
 
-    protected static ?string  $navigationGroup = 'Gerenciamento'; // Grupo no menu lateral
+    protected static ?string  $navigationGroup = 'Gerenciamento';
 
     protected static ?string $modelLabel = 'Quarto';
 
     protected static ?string $pluralModelLabel = 'Quartos';
-
 
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
 
-    // retorno o formulario de cadastro do quarto
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        $user = Auth::user();
+
+        if ($user?->isOperacional()) {
+            $query->whereHas('tarefas', fn (Builder $q) => $q->where('user_id', $user->id));
+        }
+
+        return $query;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -46,7 +61,7 @@ class QuartoResource extends Resource
                     ->required()
                     ->label('Tipo:')
                     ->maxLength(255)
-                    ->datalist(['Standard', 'Deluxe', 'Suíte']), // Sugestões de tipo
+                    ->datalist(['Standard', 'Deluxe', 'Suíte']),
                 Forms\Components\TextInput::make('valor_diaria')
                     ->label('Valor Diária:')
                     ->required()
@@ -55,19 +70,12 @@ class QuartoResource extends Resource
                 Forms\Components\Select::make('situacao')
                     ->label('Situação:')
                     ->required()
-                    ->options([ // Opções baseadas na migration
-                        'disponivel' => 'Disponível',
-                        'ocupado' => 'Ocupado',
-                        'limpeza_em_andamento' => 'Em Limpeza',
-                        'manutencao_em_andamento' => 'Em Manutenção',
-                        'finalizada' => 'Finalizada',
-                        'pedido_encaminhado' => 'Pedido Encaminhado',
-                    ])
-                    ->native(false), // Para melhor visual
+                    ->options(Quarto::SITUACOES)
+                    ->default(Quarto::SITUACAO_DISPONIVEL)
+                    ->native(false),
             ]);
     }
 
-    //monta a tabela com a lista de quartos
     public static function table(Table $table): Table
     {
         return $table
@@ -79,36 +87,38 @@ class QuartoResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('valor_diaria')
                     ->label('R$ Diária')
-                    ->money('BRL') // Formata como moeda brasileira
+                    ->money('BRL')
                     ->sortable(),
-                Tables\Columns\BadgeColumn::make('situacao') // Badge é mais visual
+                Tables\Columns\TextColumn::make('situacao')
                     ->label('Situação')
-                    ->colors([
-                        'success' => 'Disponível',
-                        'danger' => 'Ocupado',
-                        'warning' => fn($state) => in_array($state, ['limpeza_em_andamento', 'manutencao_em_andamento']),
-                        'gray' => 'Finalizada',
-                    ]),
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => Quarto::SITUACOES[$state] ?? $state)
+                    ->color(fn (string $state): string => self::corDaSituacao($state)),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('situacao')
+                    ->label('Situação')
+                    ->options(Quarto::SITUACOES),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()
-                    ->label("Visualizar"),
-                Tables\Actions\EditAction::make()
-                    ->label("Editar"),
-                Tables\Actions\DeleteAction::make()
-                    ->label("Excluir"),
+                Tables\Actions\ActionGroup::make(
+                    self::acoesDeTransicao()
+                )
+                    ->label('Alterar situação')
+                    ->icon('heroicon-o-arrow-path')
+                    ->button()
+                    ->color('warning'),
+                Tables\Actions\ViewAction::make()->label('Visualizar'),
+                Tables\Actions\EditAction::make()->label('Editar'),
+                Tables\Actions\DeleteAction::make()->label('Excluir'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()->label("Excluir"),
+                    Tables\Actions\DeleteBulkAction::make()->label('Excluir'),
                 ]),
             ]);
     }
 
-    // monta a interface com os dados do quarto (visualizar)
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
@@ -127,16 +137,12 @@ class QuartoResource extends Resource
                         Infolists\Components\TextEntry::make('situacao')
                             ->label('Situação')
                             ->badge()
-                            ->colors([
-                                'success' => 'Disponível',
-                                'danger' => 'Ocupado',
-                                'warning' => fn($state) => in_array($state, ['limpeza_em_andamento', 'manutencao_em_andamento']),
-                            ]),
+                            ->formatStateUsing(fn (string $state): string => Quarto::SITUACOES[$state] ?? $state)
+                            ->color(fn (string $state): string => self::corDaSituacao($state)),
                     ]),
             ]);
     }
 
-    // Adiciona abas para os relacionamentos
     public static function getRelations(): array
     {
         return [
@@ -153,5 +159,64 @@ class QuartoResource extends Resource
             'edit' => Pages\EditQuarto::route('/{record}/edit'),
             'view' => Pages\ViewQuarto::route('/{record}/view'),
         ];
+    }
+
+    protected static function corDaSituacao(string $situacao): string
+    {
+        return match ($situacao) {
+            Quarto::SITUACAO_DISPONIVEL => 'success',
+            Quarto::SITUACAO_OCUPADO, Quarto::SITUACAO_FECHADO => 'danger',
+            Quarto::SITUACAO_LIMPEZA_PENDENTE, Quarto::SITUACAO_MANUTENCAO_PENDENTE => 'warning',
+            Quarto::SITUACAO_LIMPEZA_EM_ANDAMENTO, Quarto::SITUACAO_MANUTENCAO_EM_ANDAMENTO => 'info',
+            default => 'gray',
+        };
+    }
+
+    /**
+     * @return array<int, Action>
+     */
+    protected static function acoesDeTransicao(): array
+    {
+        $labels = [
+            Quarto::SITUACAO_OCUPADO => ['Marcar como ocupado', 'heroicon-o-user', 'danger'],
+            Quarto::SITUACAO_DISPONIVEL => ['Liberar quarto', 'heroicon-o-check-circle', 'success'],
+            Quarto::SITUACAO_LIMPEZA_PENDENTE => ['Abrir para limpeza', 'heroicon-o-sparkles', 'warning'],
+            Quarto::SITUACAO_LIMPEZA_EM_ANDAMENTO => ['Iniciar limpeza', 'heroicon-o-play', 'info'],
+            Quarto::SITUACAO_MANUTENCAO_PENDENTE => ['Abrir manutenção', 'heroicon-o-wrench-screwdriver', 'warning'],
+            Quarto::SITUACAO_MANUTENCAO_EM_ANDAMENTO => ['Iniciar manutenção', 'heroicon-o-cog-6-tooth', 'info'],
+            Quarto::SITUACAO_FECHADO => ['Fechar quarto', 'heroicon-o-lock-closed', 'danger'],
+        ];
+
+        $acoes = [];
+
+        foreach ($labels as $destino => [$label, $icon, $color]) {
+            $acoes[] = Action::make("transitar_{$destino}")
+                ->label($label)
+                ->icon($icon)
+                ->color($color)
+                ->requiresConfirmation()
+                ->modalHeading($label)
+                ->modalDescription(fn (Quarto $record): string =>
+                    "Mudar situação do quarto {$record->numero} para '" . (Quarto::SITUACOES[$destino] ?? $destino) . "'?"
+                )
+                ->visible(fn (Quarto $record): bool => $record->podeTransitarPara($destino))
+                ->action(function (Quarto $record) use ($destino, $label): void {
+                    try {
+                        $record->transitarPara($destino);
+                        Notification::make()
+                            ->title("Quarto {$record->numero}: {$label}")
+                            ->success()
+                            ->send();
+                    } catch (DomainException $e) {
+                        Notification::make()
+                            ->title('Transição inválida')
+                            ->body($e->getMessage())
+                            ->danger()
+                            ->send();
+                    }
+                });
+        }
+
+        return $acoes;
     }
 }
