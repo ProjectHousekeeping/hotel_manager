@@ -19,14 +19,7 @@ class QuartoSeeder extends Seeder
         DB::table('quartos')->delete();
 
         $tiposDeQuarto = ['Solteiro', 'Casal', 'Suíte', 'Familiar'];
-        $situacoesPossiveis = [
-                'finalizada',
-                'limpeza_em_andamento',
-                'manutencao_em_andamento',
-                'pedido_encaminhado',
-                'disponivel', // Adicionando outras situações comuns
-                'ocupado'
-            ];
+        $situacoesPossiveis = array_keys(Quarto::SITUACOES);
 
         for ($i = 1; $i <= 10; $i++) {
             // Gera um número de quarto sequencial, por exemplo: 101, 102, 201, 202, etc.

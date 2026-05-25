@@ -7,7 +7,7 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes; // <-- Adicionado
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -16,23 +16,24 @@ use Spatie\Activitylog\LogOptions;
 
 class User extends Authenticatable implements FilamentUser
 {
+    use HasFactory, Notifiable, SoftDeletes, LogsActivity;
 
-    use HasFactory, Notifiable, SoftDeletes; // <-- Adicionado
+    public const CARGO_GERENTE = 'Gerente';
+    public const CARGO_RECEPCIONISTA = 'Recepcionista';
+    public const CARGO_CAMAREIRA = 'Camareira';
+    public const CARGO_TECNICO = 'Técnico de Manutenção';
 
-    use LogsActivity;
-    use HasFactory;
+    public const CARGOS_PERMITIDOS = [
+        self::CARGO_GERENTE,
+        self::CARGO_RECEPCIONISTA,
+        self::CARGO_CAMAREIRA,
+        self::CARGO_TECNICO,
+    ];
 
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
-        // Novos campos
         'cpf',
         'telefone',
         'situacao',
@@ -40,21 +41,11 @@ class User extends Authenticatable implements FilamentUser
         'gerente_id',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -65,11 +56,35 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        // Aqui você pode adicionar lógica de permissão se desejar
-        return true;
+        return $this->situacao !== 'inativo'
+            && in_array($this->cargo?->nome, self::CARGOS_PERMITIDOS, true);
     }
 
-    // NOVOS RELACIONAMENTOS
+    public function isGerente(): bool
+    {
+        return $this->cargo?->nome === self::CARGO_GERENTE;
+    }
+
+    public function isRecepcionista(): bool
+    {
+        return $this->cargo?->nome === self::CARGO_RECEPCIONISTA;
+    }
+
+    public function isCamareira(): bool
+    {
+        return $this->cargo?->nome === self::CARGO_CAMAREIRA;
+    }
+
+    public function isTecnico(): bool
+    {
+        return $this->cargo?->nome === self::CARGO_TECNICO;
+    }
+
+    public function isOperacional(): bool
+    {
+        return $this->isCamareira() || $this->isTecnico();
+    }
+
     public function cargo(): BelongsTo
     {
         return $this->belongsTo(Cargo::class);
@@ -87,9 +102,8 @@ class User extends Authenticatable implements FilamentUser
 
     public function tarefas(): HasMany
     {
-        return $this->hasMany(Tarefa::class, 'funcionario_id');
+        return $this->hasMany(Tarefa::class, 'user_id');
     }
-
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -98,7 +112,6 @@ class User extends Authenticatable implements FilamentUser
                 'name',
                 'email',
                 'password',
-                // Novos campos
                 'cpf',
                 'telefone',
                 'situacao',
@@ -107,4 +120,3 @@ class User extends Authenticatable implements FilamentUser
             ]);
     }
 }
-

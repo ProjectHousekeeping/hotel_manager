@@ -16,6 +16,8 @@ use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use BackedEnum;
 use Filament\Forms\Components\Tabs\Tab;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
 class TarefaResource extends Resource
@@ -32,7 +34,20 @@ class TarefaResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        return static::getEloquentQuery()->count();
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        $user = Auth::user();
+
+        if ($user?->isOperacional()) {
+            $query->where('user_id', $user->id);
+        }
+
+        return $query;
     }
 
     public static function form(Form $form): Form

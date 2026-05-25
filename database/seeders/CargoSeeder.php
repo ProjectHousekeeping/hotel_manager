@@ -18,6 +18,6 @@ class CargoSeeder extends Seeder
         Cargo::create(['nome' => 'Gerente']);
         Cargo::create(['nome' => 'Recepcionista']);
         Cargo::create(['nome' => 'Camareira']);
-        Cargo::create(['nome' => 'Serviços Gerais']);
+        Cargo::create(['nome' => 'Técnico de Manutenção']);
     }
 }

@@ -10,6 +10,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class RelatoriosResource extends Resource
 {
@@ -18,6 +19,18 @@ class RelatoriosResource extends Resource
      * não o associamos a nenhum Model.
      */
     protected static ?string $model = null;
+
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+
+        return $user?->isGerente() || $user?->isRecepcionista();
+    }
+
+    public static function canViewAny(): bool
+    {
+        return self::canAccess();
+    }
 
     /**
      * Define o ícone que aparecerá no menu.
