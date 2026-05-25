@@ -16,13 +16,9 @@ class ManutencoesPorMesChart extends ChartWidget
     protected function getData(): array
     {
         $dados = DB::table('tarefas as t')
-            ->selectRaw("
-                EXTRACT(YEAR FROM t.data) AS ano,
-                EXTRACT(MONTH FROM t.data) AS mes,
-                COUNT(*) as total
-            ")
+            ->selectRaw("strftime('%Y', t.data) AS ano, strftime('%m', t.data) AS mes, COUNT(*) as total")
             ->where('t.tipo_tarefa', 'Manutenção')
-            ->groupByRaw('EXTRACT(YEAR FROM t.data), EXTRACT(MONTH FROM t.data)')
+            ->groupByRaw("strftime('%Y', t.data), strftime('%m', t.data)")
             ->orderByRaw('ano, mes')
             ->get();
 

@@ -44,9 +44,9 @@ class UserResource extends Resource
                             ->email()
                             ->required(),
                         Forms\Components\TextInput::make('password')
-                            ->label('Senha:') // Adicione um label mais claro
+                            ->label('Senha:')
                             ->password()
-                            ->dehydrated(fn (string $context): bool => $context === 'create' || !empty($state))
+                            ->dehydrated(fn ($state, string $context): bool => $context === 'create' || filled($state))
                             ->required(fn (string $context): bool => $context === 'create'),
                         Forms\Components\TextInput::make('cpf')
                             ->label('CPF:')
@@ -64,8 +64,7 @@ class UserResource extends Resource
                             ->label('Cargo:')
                             ->preload(),
                         Forms\Components\Select::make('gerente_id')
-                            // Maiza - Não entendi a função disso
-                            ->relationship('gerente', 'name') // Agora relaciona com outros usuários
+                            ->relationship('gerente', 'name')
                             ->searchable()
                             ->label('Gerente:')
                             ->preload(),
@@ -76,6 +75,7 @@ class UserResource extends Resource
                                 'ocupado' => 'Ocupado',
                                 'ferias' => 'Férias',
                                 'afastado' => 'Afastado',
+                                'inativo' => 'Inativo',
                             ])->required(),
                     ])->columns(2),
             ]);
@@ -83,7 +83,6 @@ class UserResource extends Resource
 
     public static function table(Table $table): Table
     {
-        // Tabela com a lista de usuários cadastrados
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
@@ -96,12 +95,15 @@ class UserResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('situacao')
                     ->label('Situação')
-                    // Por algum motivo não esta apresendo a lista abaixo na tabela
-                    ->colors([
-                        'success' => 'Disponível',
-                        'danger' => 'Afastado',
-                        'warning' => 'Férias',
-                    ])->badge(),
+                    ->color(fn (string $state): string => match ($state) {
+                        'disponivel' => 'success',
+                        'ocupado' => 'warning',
+                        'ferias' => 'info',
+                        'afastado' => 'danger',
+                        'inativo' => 'gray',
+                        default => 'secondary',
+                    })
+                    ->badge(),
                 Tables\Columns\TextColumn::make('created_at')->dateTime('d/m/Y')->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
@@ -122,7 +124,6 @@ class UserResource extends Resource
 
     public static function infolist(Infolist $infolist): Infolist
     {
-        // quadro apresentado quando clicar em visualizar na tabela
         return $infolist
             ->schema([
                 Infolists\Components\Section::make('Informações do Usuário')

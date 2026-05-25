@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Quarto;
 use App\Models\Tarefa;
+use App\Models\TipoUrgencia;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -36,6 +37,13 @@ class TarefaSeeder extends Seeder
 
         if ($quartos->isEmpty()) {
             $this->command->info('Nenhum quarto encontrado. Rode o seeder de quartos primeiro.');
+            return;
+        }
+
+        $urgencias = TipoUrgencia::all();
+
+        if ($urgencias->isEmpty()) {
+            $this->command->info('Nenhum tipo de urgência encontrado. Rode o seeder de tipo_urgencias primeiro.');
             return;
         }
 
@@ -73,6 +81,7 @@ class TarefaSeeder extends Seeder
                 Tarefa::create([
                     'user_id' => $funcionario->id,
                     'quarto_id' => $quartoAleatorio->id,
+                    'tipo_urgencia_id' => $urgencias->random()->id,
                     'tipo_tarefa' => $tipoTarefaSelecionada,
                     'data' => $dataTarefa->format('Y-m-d'),
                     'hora_inicio' => $horaInicio->format('H:i:s'),

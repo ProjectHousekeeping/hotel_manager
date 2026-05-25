@@ -16,8 +16,11 @@ class TarefasRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('funcionario_id')
-                    ->relationship('funcionario', 'nome')
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', 'name')
+                    ->label('Funcionário')
+                    ->searchable()
+                    ->preload()
                     ->required(),
                 Forms\Components\Select::make('tipo_tarefa')
                     ->options([
@@ -34,7 +37,7 @@ class TarefasRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('tipo_tarefa')
             ->columns([
-                Tables\Columns\TextColumn::make('funcionario.nome'),
+                Tables\Columns\TextColumn::make('user.name')->label('Funcionário'),
                 Tables\Columns\BadgeColumn::make('tipo_tarefa'),
                 Tables\Columns\TextColumn::make('data')->date('d/m/Y'),
                 Tables\Columns\IconColumn::make('hora_fim')->boolean()->label('Finalizada'),
