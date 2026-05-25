@@ -32,9 +32,9 @@ class StatsOverview extends BaseWidget
 
         // Manutenções por mês e ano
         $manutencoesPorMes = DB::table('tarefas as t')
-            ->selectRaw('EXTRACT(YEAR FROM t.data) AS ano, EXTRACT(MONTH FROM t.data) AS mes, COUNT(t.id) AS total_manutencoes')
+            ->selectRaw("strftime('%Y', t.data) AS ano, strftime('%m', t.data) AS mes, COUNT(t.id) AS total_manutencoes")
             ->where('t.tipo_tarefa', 'Manutenção')
-            ->groupByRaw('EXTRACT(YEAR FROM t.data), EXTRACT(MONTH FROM t.data)')
+            ->groupByRaw("strftime('%Y', t.data), strftime('%m', t.data)")
             ->orderByRaw('ano, mes')
             ->get();
 
