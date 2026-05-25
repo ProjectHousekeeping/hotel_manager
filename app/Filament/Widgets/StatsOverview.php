@@ -2,15 +2,12 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Funcionario;
 use App\Models\Quarto;
 use App\Models\Tarefa;
 use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\DB;
-
-use App\Filament\Widgets\ManutencoesPorMesChart;
 
 class StatsOverview extends BaseWidget
 {

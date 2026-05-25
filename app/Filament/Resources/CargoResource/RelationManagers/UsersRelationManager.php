@@ -14,13 +14,10 @@ class UsersRelationManager extends RelationManager
 {
     protected static string $relationship = 'users';
 
-    //incluido para arrumar o titulo da tabela usuários
     protected static ?string $title = 'Usuários vinculados ao cargo';
 
-    // Formulário para criar/editar um funcionário a partir desta relação
     public function form(Form $form): Form
     {
-        
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
@@ -38,17 +35,15 @@ class UsersRelationManager extends RelationManager
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('password')
-                    ->label('Senha:') // Adicione um label mais claro
+                    ->label('Senha:')
                     ->password()
-                    ->dehydrated(fn (string $context): bool => $context === 'create' || !empty($state))
+                    ->dehydrated(fn ($state, string $context): bool => $context === 'create' || filled($state))
                     ->required(fn (string $context): bool => $context === 'create'),
             ]);
     }
 
-    // Monta a tabela que lista os usuários associados ao cargo
     public function table(Table $table): Table
     {
-        
         return $table
             ->recordTitleAttribute('name')
             ->columns([
@@ -59,26 +54,26 @@ class UsersRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('email')
                     ->label('E-mail')
                     ->searchable(),
-                Tables\Columns\BadgeColumn::make('situacao')
+                Tables\Columns\TextColumn::make('situacao')
                     ->label('Situação')
-                    ->colors([
-                        'success' => 'Disponível',
-                        'danger' => 'Afastado',
-                        'warning' => 'Férias',
-                    ]),
+                    ->color(fn (string $state): string => match ($state) {
+                        'disponivel' => 'success',
+                        'ocupado' => 'warning',
+                        'ferias' => 'info',
+                        'afastado' => 'danger',
+                        'inativo' => 'gray',
+                        default => 'secondary',
+                    })
+                    ->badge(),
             ])
-            ->filters([
-                // Pode adicionar filtros aqui se desejar
-            ])
+            ->filters([])
             ->headerActions([
-                // Botão para criar um novo funcionário já associado a este cargo
                 Tables\Actions\CreateAction::make()
                     ->label('Novo Usuário')
-                    ->modalHeading('Criar Usuário')    // título do modal
-                    ->modalButton('Salvar Usuário'),   // texto do botão de confirmação,
+                    ->modalHeading('Criar Usuário')
+                    ->modalButton('Salvar Usuário'),
             ])
             ->actions([
-                // Ações para cada linha da tabela
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
