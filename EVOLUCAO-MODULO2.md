@@ -72,6 +72,7 @@ migração e sem alterar a operação para o usuário.
 composer install
 composer require --dev qossmic/deptrac infection/infection   # regenera o composer.lock
 # Cobertura/mutation exigem Xdebug (mode=coverage) ou PCOV habilitado.
+# Mutation: vendor/bin/infection --threads=4 --ignore-msi-with-no-mutations
 ```
 
 ### 3.2 Baseline T0 (antes da refatoração) e meta

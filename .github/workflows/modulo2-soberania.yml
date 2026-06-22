@@ -57,4 +57,4 @@ jobs:
 
       - name: "F7 — mutation score das Actions (informativo)"
         continue-on-error: true
-        run: vendor/bin/infection --threads=4 --only-covered --no-progress --ignore-msi-with-no-mutations || true
+        run: vendor/bin/infection --threads=4 --no-progress --ignore-msi-with-no-mutations || true

@@ -71,7 +71,7 @@
             "@php artisan test --testsuite=Unit --coverage --min=70"
         ],
         "metrics:infection": [
-            "infection --threads=4 --only-covered"
+            "infection --threads=4 --ignore-msi-with-no-mutations"
         ]
     },
     "extra": {
