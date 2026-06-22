@@ -30,8 +30,8 @@ jobs:
       - name: Gerar APP_KEY
         run: php artisan key:generate
 
-      - name: Instalar ferramentas de métrica
-        run: composer require --dev qossmic/deptrac infection/infection --no-interaction --no-progress
+      - name: Instalar Deptrac (gate)
+        run: composer require --dev qossmic/deptrac --no-interaction --no-progress
 
       - name: "GATE E3/F6 — fronteira domínio -> Filament (Deptrac)"
         run: vendor/bin/deptrac analyse --config-file=deptrac.yaml --no-progress
@@ -41,7 +41,11 @@ jobs:
 
       - name: "E5 — cobertura das Actions (informativo)"
         continue-on-error: true
-        run: vendor/bin/phpunit --testsuite=Unit --coverage-text --path-coverage || true
+        run: vendor/bin/phpunit --testsuite=Unit --coverage-text || true
+
+      - name: Instalar Infection (informativo)
+        continue-on-error: true
+        run: composer require --dev infection/infection --no-interaction --no-progress || true
 
       - name: "F7 — mutation score das Actions (informativo)"
         continue-on-error: true
