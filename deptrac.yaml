@@ -26,8 +26,8 @@ deptrac:
           value: app/Filament/.*
     - name: FilamentVendor
       collectors:
-        - type: className
-          value: ^Filament\\
+        - type: classNameRegex
+          value: '^Filament\\'
     - name: Models
       collectors:
         - type: directory
