@@ -60,6 +60,18 @@
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test"
+        ],
+        "test:unit": [
+            "@php artisan test --testsuite=Unit"
+        ],
+        "metrics:deptrac": [
+            "deptrac analyse --config-file=deptrac.yaml --report-uncovered"
+        ],
+        "metrics:coverage": [
+            "@php artisan test --testsuite=Unit --coverage --min=70"
+        ],
+        "metrics:infection": [
+            "infection --threads=4 --only-covered"
         ]
     },
     "extra": {

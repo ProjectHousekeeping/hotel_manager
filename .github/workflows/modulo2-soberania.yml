@@ -1,0 +1,48 @@
+name: Módulo 2 — Soberania (CLS-03)
+
+# Executa os comandos do Protocolo de Medição do Plano de Evolução do Módulo 2.
+# Gates bloqueantes por PR: E3/F6 (fronteira domínio -> Filament via Deptrac) e a
+# suíte de testes Unit. Cobertura (E5) e mutation score (F7) são informativos.
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP 8.2 (+ pcov)
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: pcov
+
+      - name: Preparar ambiente
+        run: cp .env.example .env
+
+      - name: Instalar dependências
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Gerar APP_KEY
+        run: php artisan key:generate
+
+      - name: Instalar ferramentas de métrica
+        run: composer require --dev qossmic/deptrac infection/infection --no-interaction --no-progress
+
+      - name: "GATE E3/F6 — fronteira domínio -> Filament (Deptrac)"
+        run: vendor/bin/deptrac analyse --config-file=deptrac.yaml --no-progress
+
+      - name: "GATE E6/E9 — testes Unit (Actions + máquina de estados)"
+        run: php artisan test --testsuite=Unit
+
+      - name: "E5 — cobertura das Actions (informativo)"
+        continue-on-error: true
+        run: vendor/bin/phpunit --testsuite=Unit --coverage-text --path-coverage || true
+
+      - name: "F7 — mutation score das Actions (informativo)"
+        continue-on-error: true
+        run: vendor/bin/infection --threads=4 --only-covered --no-progress --ignore-msi-with-no-mutations || true

@@ -1,0 +1,51 @@
+# Deptrac — gate de fronteira arquitetural do Módulo 2 (Operações do Hotel).
+#
+# Métricas suportadas:
+#   E3 / F6 — o domínio NÃO pode depender de Filament (nem do app/Filament,
+#   nem do namespace de vendor Filament\). Qualquer violação reprova o gate.
+#
+# Uso:
+#   composer require --dev qossmic/deptrac   # (uma vez)
+#   vendor/bin/deptrac analyse --config-file=deptrac.yaml
+#   # gate de CI: o comando retorna código != 0 se houver violação.
+deptrac:
+  paths:
+    - ./app
+  layers:
+    - name: Domain
+      collectors:
+        - type: directory
+          value: app/Domain/.*
+    - name: Infrastructure
+      collectors:
+        - type: directory
+          value: app/Infrastructure/.*
+    - name: FilamentApp
+      collectors:
+        - type: directory
+          value: app/Filament/.*
+    - name: FilamentVendor
+      collectors:
+        - type: className
+          value: ^Filament\\
+    - name: Models
+      collectors:
+        - type: directory
+          value: app/Models/.*
+
+  ruleset:
+    # O domínio só pode depender dos Models (Eloquent) — nunca de Filament.
+    Domain:
+      - Models
+    # A infraestrutura implementa as portas do domínio.
+    Infrastructure:
+      - Domain
+      - Models
+    # A UI (Filament) é um wrapper fino: pode invocar domínio e infraestrutura.
+    FilamentApp:
+      - Domain
+      - Infrastructure
+      - Models
+      - FilamentVendor
+    Models: ~
+    FilamentVendor: ~

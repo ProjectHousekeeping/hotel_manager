@@ -2,11 +2,15 @@
 
 namespace App\Filament\Resources;
 
+use App\Domain\Operacoes\Actions\AtualizarSituacaoQuarto;
+use App\Domain\Operacoes\Enums\SituacaoQuarto;
+use App\Domain\Operacoes\Exceptions\TransicaoInvalidaException;
 use App\Filament\Resources\QuartoResource\Pages;
 use App\Filament\Resources\QuartoResource\RelationManagers;
 use App\Models\Quarto;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -94,6 +98,39 @@ class QuartoResource extends Resource
                 //
             ])
             ->actions([
+                // Fase 3 — thin wrapper: a UI apenas coleta a nova situação e
+                // delega a regra de transição à Action de domínio.
+                Tables\Actions\Action::make('alterarSituacao')
+                    ->label('Alterar situação')
+                    ->icon('heroicon-o-arrow-path')
+                    ->color('warning')
+                    ->form(fn (Quarto $record): array => [
+                        Forms\Components\Placeholder::make('situacao_atual')
+                            ->label('Situação atual')
+                            ->content(SituacaoQuarto::from($record->situacao)->rotulo()),
+                        Forms\Components\Select::make('situacao')
+                            ->label('Nova situação')
+                            ->required()
+                            ->native(false)
+                            ->options(SituacaoQuarto::from($record->situacao)->opcoesDeTransicao())
+                            ->helperText('Apenas transições válidas a partir da situação atual são exibidas.'),
+                    ])
+                    ->action(function (Quarto $record, array $data): void {
+                        try {
+                            app(AtualizarSituacaoQuarto::class)->executar($record, $data['situacao']);
+
+                            Notification::make()
+                                ->title('Situação atualizada com sucesso.')
+                                ->success()
+                                ->send();
+                        } catch (TransicaoInvalidaException $e) {
+                            Notification::make()
+                                ->title('Transição inválida')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+                        }
+                    }),
                 Tables\Actions\ViewAction::make()
                     ->label("Visualizar"),
                 Tables\Actions\EditAction::make()
